@@ -2,7 +2,7 @@
 
 ## Project Identity
 **Name:** Evolution of Todo
-**Phase:** Phase I - In-Memory Python Console App
+**Phase:** Phase II - Full-Stack Web Application
 **Approach:** Spec-Driven Development with Claude Code
 
 ## Core Principles
@@ -14,51 +14,57 @@
 - All spec iterations are preserved in `specs/history/`
 
 ### 2. Clean Code Standards
-- Follow PEP 8 style guidelines
-- Use type hints for all functions
+- Follow language-specific style guides (PEP 8 for Python, ESLint for TypeScript)
+- Use type hints/types for all functions
 - Keep functions small and focused (single responsibility)
 - Use meaningful variable and function names
 
-### 3. Project Structure
+### 3. Monorepo Structure
 ```
 hackathon-todo/
-├── constitution.md      # This file - project rules
-├── specs/               # Current specifications
-│   └── history/         # All spec iterations
-├── src/                 # Python source code
-│   └── todo/            # Main package
-├── README.md            # Setup and usage instructions
-├── CLAUDE.md            # Claude Code instructions
-└── pyproject.toml       # Project configuration
+├── constitution.md
+├── CLAUDE.md
+├── specs/
+│   ├── phase1-console-app.md
+│   ├── phase2-fullstack-app.md
+│   └── history/
+├── frontend/           # Next.js app
+│   ├── CLAUDE.md
+│   └── ...
+├── backend/            # FastAPI app
+│   ├── CLAUDE.md
+│   └── ...
+├── src/todo/           # Phase I console app
+└── README.md
 ```
 
-### 4. Feature Requirements (Phase I)
-All features must support in-memory storage:
+### 4. Phase II Requirements
 
 | Feature | Description |
 |---------|-------------|
-| Add Task | Create new todo with title and description |
-| View Tasks | Display all tasks with status indicators |
-| Update Task | Modify existing task details |
-| Delete Task | Remove task by ID |
-| Mark Complete | Toggle task completion status |
+| User Auth | Sign up/sign in with Better Auth |
+| Task CRUD | Create, read, update, delete tasks |
+| Task Complete | Toggle task completion |
+| User Isolation | Each user sees only their tasks |
+| Persistent Storage | Neon PostgreSQL database |
 
-### 5. Data Model
-```python
-Task:
-  - id: int (auto-generated)
-  - title: str (required, 1-200 chars)
-  - description: str (optional)
-  - completed: bool (default: False)
-  - created_at: datetime
-```
+### 5. Technology Stack
 
-### 6. User Interface
-- Command-line interface with menu-driven navigation
-- Clear prompts and feedback messages
-- Input validation with helpful error messages
+| Layer | Technology |
+|-------|------------|
+| Frontend | Next.js 15+, TypeScript, Tailwind CSS |
+| Backend | FastAPI, SQLModel, Python 3.12+ |
+| Database | Neon Serverless PostgreSQL |
+| Auth | Better Auth with JWT |
+
+### 6. API Security
+- All task endpoints require JWT authentication
+- Backend validates JWT and extracts user_id
+- Tasks are filtered by authenticated user
+- No user can access another user's tasks
 
 ### 7. Quality Standards
 - All user inputs must be validated
-- Graceful error handling (no crashes)
-- Consistent output formatting
+- Graceful error handling with proper HTTP status codes
+- Consistent API response format
+- Responsive UI design

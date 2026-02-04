@@ -1,72 +1,101 @@
-# Evolution of Todo - Phase I
+# Evolution of Todo - Hackathon II
 
-A command-line todo application built using Spec-Driven Development with Claude Code.
+A todo application evolving from console app to cloud-native AI chatbot using Spec-Driven Development.
+
+## Current Phase: Phase II - Full-Stack Web Application
 
 ## Features
 
-- Add tasks with title and description
-- View all tasks with status indicators
-- Update task details
-- Delete tasks by ID
-- Mark tasks as complete/incomplete
+- User authentication (sign up/sign in)
+- Task CRUD operations
+- Task completion toggle
+- Filter tasks by status
+- Persistent storage with Neon PostgreSQL
+
+## Tech Stack
+
+| Layer | Technology |
+|-------|------------|
+| Frontend | Next.js 15, TypeScript, Tailwind CSS |
+| Backend | FastAPI, SQLModel, Python 3.12+ |
+| Database | Neon Serverless PostgreSQL |
+| Auth | Better Auth with JWT |
+
+## Project Structure
+
+```
+├── constitution.md          # Project principles
+├── CLAUDE.md               # Claude Code instructions
+├── specs/                  # Feature specifications
+│   ├── phase1-console-app.md
+│   ├── phase2-fullstack-app.md
+│   └── history/
+├── frontend/               # Next.js app
+│   ├── app/
+│   ├── components/
+│   └── lib/
+├── backend/                # FastAPI app
+│   ├── app/
+│   └── requirements.txt
+└── src/todo/               # Phase I console app
+```
 
 ## Setup
 
 ### Prerequisites
 
 - Python 3.12+
-- UV package manager
+- Node.js 18+
+- Neon PostgreSQL database
 
-### Installation
-
-```bash
-# Clone the repository
-git clone https://github.com/ZEEKOLACHI/Hackathon-II.git
-cd Hackathon-II
-
-# Install dependencies
-uv sync
-```
-
-## Usage
+### Backend Setup
 
 ```bash
-uv run python -m todo.main
+cd backend
+pip install -r requirements.txt
+
+# Create .env file
+cp .env.example .env
+# Edit .env with your DATABASE_URL and BETTER_AUTH_SECRET
+
+uvicorn app.main:app --reload --port 8000
 ```
 
-## Project Structure
+### Frontend Setup
 
+```bash
+cd frontend
+npm install
+
+# Create .env.local file
+cp .env.example .env.local
+# Edit .env.local with your settings
+
+npm run dev
 ```
-├── constitution.md          # Project principles & rules
-├── CLAUDE.md               # Claude Code instructions
-├── specs/                  # Feature specifications
-│   ├── phase1-console-app.md
-│   └── history/            # Spec iterations
-├── src/
-│   └── todo/               # Source code
-│       ├── __init__.py
-│       ├── main.py         # Entry point
-│       ├── models.py       # Task data model
-│       └── storage.py      # In-memory storage
-├── pyproject.toml
-└── README.md
-```
+
+## API Endpoints
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | /api/tasks | List all tasks |
+| POST | /api/tasks | Create a task |
+| GET | /api/tasks/{id} | Get task details |
+| PUT | /api/tasks/{id} | Update a task |
+| DELETE | /api/tasks/{id} | Delete a task |
+| PATCH | /api/tasks/{id}/complete | Toggle completion |
+
+## Phases
+
+- [x] Phase I: Console App
+- [ ] Phase II: Full-Stack Web App (Current)
+- [ ] Phase III: AI-Powered Chatbot
+- [ ] Phase IV: Local Kubernetes Deployment
+- [ ] Phase V: Advanced Cloud Deployment
 
 ## Development Approach
 
 This project follows **Spec-Driven Development**:
-
 1. Write specifications in `/specs/`
 2. Generate implementation using Claude Code
 3. Iterate on specs until correct output
-4. Preserve spec history in `/specs/history/`
-
-## Hackathon
-
-Part of **Hackathon II: Spec-Driven Development & Cloud Native AI**
-
-- Phase I: Console App (Current)
-- Phase II: Full-Stack Web Application
-- Phase III: AI-Powered Chatbot
-- Phase IV: Local Kubernetes Deployment
-- Phase V: Advanced Cloud Deployment

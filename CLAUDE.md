@@ -2,7 +2,7 @@
 
 ## Project Overview
 This is a **Spec-Driven Development** project for Hackathon II.
-Currently in **Phase I**: In-Memory Python Console Todo App.
+Currently in **Phase II**: Full-Stack Web Application.
 
 ## Key Constraint
 **No manual code writing allowed.** All implementation must be generated from specifications.
@@ -11,7 +11,13 @@ Currently in **Phase I**: In-Memory Python Console Todo App.
 - `/constitution.md` - Project principles and rules
 - `/specs/` - Feature specifications (read these first)
 - `/specs/history/` - Previous spec iterations
-- `/src/todo/` - Python source code
+- `/frontend/` - Next.js application
+- `/backend/` - FastAPI application
+- `/src/todo/` - Phase I console app (completed)
+
+## Spec-Kit Structure
+- `/specs/phase2-fullstack-app.md` - Current phase spec
+- `/specs/phase1-console-app.md` - Phase I spec (completed)
 
 ## Development Workflow
 1. Read the relevant spec from `/specs/`
@@ -19,31 +25,19 @@ Currently in **Phase I**: In-Memory Python Console Todo App.
 3. If output is incorrect, spec will be refined
 4. Preserve spec iterations in `/specs/history/`
 
-## Phase I Requirements
-Implement 5 Basic Level features:
-1. **Add Task** - Create new todo items
-2. **View Tasks** - Display all tasks with status
-3. **Update Task** - Modify task details
-4. **Delete Task** - Remove tasks by ID
-5. **Mark Complete** - Toggle completion status
+## Phase II Requirements
+- Next.js frontend with Better Auth
+- FastAPI backend with SQLModel
+- Neon PostgreSQL database
+- JWT authentication between frontend and backend
+- All 5 task CRUD operations
 
-## Technical Stack
-- Python 3.13+
-- UV package manager
-- In-memory storage (list/dict)
-- No external databases
+## Commands
+- Frontend: `cd frontend && npm run dev`
+- Backend: `cd backend && uvicorn app.main:app --reload`
+- Both: `docker-compose up`
 
-## Code Standards
-- Use type hints
-- Follow PEP 8
-- Validate all user inputs
-- Handle errors gracefully
-
-## Running the App
-```bash
-uv run python -m todo.main
-```
-
-## File Naming
-- Specs: `specs/<feature-name>.md`
-- History: `specs/history/<feature-name>-v<N>.md`
+## File References
+- Frontend guidelines: `/frontend/CLAUDE.md`
+- Backend guidelines: `/backend/CLAUDE.md`
+- API spec: `/specs/phase2-fullstack-app.md`
