@@ -21,3 +21,10 @@ wheels/
 # OS
 .DS_Store
 Thumbs.db
+
+# Node
+node_modules/
+.next/
+
+# Claude
+.claude/
