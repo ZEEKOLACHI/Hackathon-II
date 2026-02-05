@@ -18,11 +18,9 @@ export default function SignInPage() {
     setLoading(true);
 
     try {
-      await signIn.email({
-        email,
-        password,
-      });
+      await signIn(email, password);
       router.push("/dashboard");
+      router.refresh();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Sign in failed");
     } finally {

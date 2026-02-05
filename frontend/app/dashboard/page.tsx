@@ -16,14 +16,14 @@ export default function DashboardPage() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    if (!isPending && !session) {
+    if (!isPending && !session?.user) {
       router.push("/auth/signin");
     }
   }, [session, isPending, router]);
 
   useEffect(() => {
-    if (session?.session?.token) {
-      api.setToken(session.session.token);
+    if (session?.token) {
+      api.setToken(session.token);
       loadTasks();
     }
   }, [session, filter]);
@@ -67,6 +67,7 @@ export default function DashboardPage() {
     await signOut();
     api.clearToken();
     router.push("/");
+    router.refresh();
   };
 
   if (isPending) {
@@ -77,7 +78,7 @@ export default function DashboardPage() {
     );
   }
 
-  if (!session) {
+  if (!session?.user) {
     return null;
   }
 
@@ -86,12 +87,15 @@ export default function DashboardPage() {
       <div className="max-w-2xl mx-auto">
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold">My Tasks</h1>
-          <button
-            onClick={handleSignOut}
-            className="px-4 py-2 text-gray-600 hover:text-gray-800"
-          >
-            Sign Out
-          </button>
+          <div className="flex items-center gap-4">
+            <span className="text-gray-600">{session.user.email}</span>
+            <button
+              onClick={handleSignOut}
+              className="px-4 py-2 text-gray-600 hover:text-gray-800"
+            >
+              Sign Out
+            </button>
+          </div>
         </div>
 
         {error && (
