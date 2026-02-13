@@ -1,7 +1,7 @@
 """AI Service using Google Gemini API."""
 
 import json
-from datetime import datetime, timedelta
+from datetime import datetime
 from typing import Optional
 import google.generativeai as genai
 from app.config import settings
