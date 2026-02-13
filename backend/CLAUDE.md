@@ -50,4 +50,5 @@ uvicorn app.main:app --reload --port 8000
 ```
 DATABASE_URL=postgresql://...
 BETTER_AUTH_SECRET=your-secret-key
+GEMINI_API_KEY=your-gemini-api-key
 ```

@@ -49,6 +49,9 @@ def create_task(
         user_id=user_id,
         title=task_data.title,
         description=task_data.description,
+        due_date=task_data.due_date,
+        priority=task_data.priority,
+        categories=task_data.categories,
     )
     session.add(task)
     session.commit()
@@ -107,6 +110,12 @@ def update_task(
         task.title = task_data.title
     if task_data.description is not None:
         task.description = task_data.description
+    if task_data.due_date is not None:
+        task.due_date = task_data.due_date
+    if task_data.priority is not None:
+        task.priority = task_data.priority
+    if task_data.categories is not None:
+        task.categories = task_data.categories
 
     task.updated_at = datetime.utcnow()
     session.add(task)

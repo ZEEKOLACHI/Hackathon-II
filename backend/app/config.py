@@ -15,5 +15,8 @@ class Settings:
     # CORS settings
     FRONTEND_URL: str = os.getenv("FRONTEND_URL", "http://localhost:3000")
 
+    # AI settings
+    GEMINI_API_KEY: str = os.getenv("GEMINI_API_KEY", "")
+
 
 settings = Settings()

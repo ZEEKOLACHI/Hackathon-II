@@ -6,6 +6,9 @@ export interface Task {
   title: string;
   description: string | null;
   completed: boolean;
+  due_date: string | null;
+  priority: "low" | "medium" | "high" | null;
+  categories: string[] | null;
   created_at: string;
   updated_at: string;
 }
@@ -14,17 +17,51 @@ export interface TaskListItem {
   id: number;
   title: string;
   completed: boolean;
+  due_date: string | null;
+  priority: string | null;
   created_at: string;
 }
 
 export interface CreateTaskData {
   title: string;
   description?: string;
+  due_date?: string;
+  priority?: "low" | "medium" | "high";
+  categories?: string[];
 }
 
 export interface UpdateTaskData {
   title?: string;
   description?: string;
+  due_date?: string;
+  priority?: "low" | "medium" | "high";
+  categories?: string[];
+}
+
+// AI Types
+export interface ParsedTask {
+  title: string;
+  description: string | null;
+  due_date: string | null;
+  priority: "low" | "medium" | "high" | null;
+  categories: string[] | null;
+}
+
+export interface TaskSuggestion {
+  title: string;
+  reason: string;
+}
+
+export interface SummaryStats {
+  total: number;
+  high_priority: number;
+  completed: number;
+  overdue: number;
+}
+
+export interface TaskSummary {
+  summary: string;
+  stats: SummaryStats;
 }
 
 class ApiClient {
@@ -101,6 +138,28 @@ class ApiClient {
       `/api/tasks/${id}/complete`,
       { method: "PATCH" }
     );
+  }
+
+  // AI Endpoints
+  async parseTask(text: string): Promise<ParsedTask> {
+    return this.request<ParsedTask>("/api/tasks/parse", {
+      method: "POST",
+      body: JSON.stringify({ text }),
+    });
+  }
+
+  async getSuggestions(): Promise<{ suggestions: TaskSuggestion[] }> {
+    return this.request<{ suggestions: TaskSuggestion[] }>("/api/tasks/suggestions");
+  }
+
+  async categorizeTask(id: number): Promise<{ categories: string[] }> {
+    return this.request<{ categories: string[] }>(`/api/tasks/${id}/categorize`, {
+      method: "POST",
+    });
+  }
+
+  async getSummary(): Promise<TaskSummary> {
+    return this.request<TaskSummary>("/api/tasks/summary");
   }
 }
 

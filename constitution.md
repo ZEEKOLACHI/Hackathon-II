@@ -2,7 +2,7 @@
 
 ## Project Identity
 **Name:** Evolution of Todo
-**Phase:** Phase II - Full-Stack Web Application
+**Phase:** Phase III - AI Integration
 **Approach:** Spec-Driven Development with Claude Code
 
 ## Core Principles
@@ -63,7 +63,24 @@ hackathon-todo/
 - Tasks are filtered by authenticated user
 - No user can access another user's tasks
 
-### 7. Quality Standards
+### 7. Phase III Requirements
+
+| Feature | Description |
+|---------|-------------|
+| Natural Language Input | Parse "Buy milk tomorrow 5pm" into structured task |
+| Smart Suggestions | AI-generated follow-up task recommendations |
+| Auto-Categorization | Automatic task tagging/categorization |
+| Daily Summary | AI-generated task overview and prioritization |
+| Priority & Due Dates | Extended task model with scheduling |
+
+### 8. AI Technology
+
+| Component | Technology |
+|-----------|------------|
+| AI Provider | Google Gemini API |
+| Model | gemini-2.0-flash |
+
+### 9. Quality Standards
 - All user inputs must be validated
 - Graceful error handling with proper HTTP status codes
 - Consistent API response format
