@@ -2,7 +2,7 @@
 
 ## Project Overview
 This is a **Spec-Driven Development** project for Hackathon II.
-Currently in **Phase IV**: Local Kubernetes Deployment.
+Currently in **Phase V**: CI/CD Pipeline with GitHub Actions.
 
 ## Key Constraint
 **No manual code writing allowed.** All implementation must be generated from specifications.
@@ -18,7 +18,8 @@ Currently in **Phase IV**: Local Kubernetes Deployment.
 - `/src/todo/` - Phase I console app (completed)
 
 ## Spec-Kit Structure
-- `/specs/phase4-local-k8s.md` - Current phase spec
+- `/specs/phase5-ci-cd-pipeline.md` - Current phase spec
+- `/specs/phase4-local-k8s.md` - Phase IV spec (completed)
 - `/specs/phase3-ai-integration.md` - Phase III spec (completed)
 - `/specs/phase2-fullstack-app.md` - Phase II spec (completed)
 - `/specs/phase1-console-app.md` - Phase I spec (completed)
@@ -38,9 +39,17 @@ Currently in **Phase IV**: Local Kubernetes Deployment.
 - Secrets and ConfigMap for environment variable management
 - Frontend exposed via NodePort service
 
+## Phase V Requirements
+- GitHub Actions CI workflow (`.github/workflows/ci.yml`)
+- Backend linting with ruff, testing with pytest
+- Frontend linting with next lint, build validation
+- Docker image build verification
+- Backend test suite in `backend/tests/`
+
 ## Commands
 - Frontend: `cd frontend && npm run dev`
 - Backend: `cd backend && uvicorn app.main:app --reload`
+- Backend tests: `cd backend && pytest tests/ -v`
 - Docker Compose: `docker-compose up --build`
 - K8s deploy: `kubectl apply -f k8s/`
 - K8s access: `minikube service frontend-service -n todo-app`
@@ -58,3 +67,4 @@ FRONTEND_URL=http://localhost:3000
 - Backend guidelines: `/backend/CLAUDE.md`
 - API spec: `/specs/phase2-fullstack-app.md`
 - K8s deployment spec: `/specs/phase4-local-k8s.md`
+- CI/CD spec: `/specs/phase5-ci-cd-pipeline.md`

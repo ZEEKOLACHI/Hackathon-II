@@ -1,8 +1,10 @@
 # Evolution of Todo - Hackathon II
 
+![CI](https://github.com/ZEEKOLACHI/Hackathon_II/actions/workflows/ci.yml/badge.svg)
+
 A todo application evolving from console app to AI-powered task manager using **Spec-Driven Development**. Each phase builds on the last — from CLI to full-stack to intelligent task management powered by Google Gemini.
 
-## Current Phase: Phase IV - Local Kubernetes Deployment
+## Current Phase: Phase V - CI/CD Pipeline
 
 ## Features
 
@@ -34,6 +36,14 @@ A todo application evolving from console app to AI-powered task manager using **
 - Secrets and ConfigMap for environment variable management
 - NodePort service for external frontend access
 
+### Phase V - CI/CD Pipeline
+- GitHub Actions workflow triggered on push/PR to `main`
+- Backend linting with ruff
+- Backend tests with pytest (SQLite, no external DB)
+- Frontend linting with next lint
+- Frontend build validation (TypeScript + Next.js)
+- Docker image build verification for both services
+
 ## Tech Stack
 
 | Layer | Technology |
@@ -45,6 +55,7 @@ A todo application evolving from console app to AI-powered task manager using **
 | AI | Google Gemini API (gemini-2.0-flash) |
 | Containers | Docker, docker-compose |
 | Orchestration | Kubernetes (Minikube) |
+| CI/CD | GitHub Actions |
 
 ## Project Structure
 
@@ -66,6 +77,8 @@ A todo application evolving from console app to AI-powered task manager using **
 │   ├── postgres-deployment.yaml
 │   ├── backend-deployment.yaml
 │   └── frontend-deployment.yaml
+├── .github/workflows/           # GitHub Actions CI/CD
+│   └── ci.yml
 ├── frontend/                    # Next.js app
 │   ├── app/
 │   │   ├── auth/               # Sign in / Sign up pages
@@ -250,7 +263,8 @@ Generates a prioritized overview of your day with key stats.
 - [x] Phase II: Full-Stack Web App
 - [x] Phase III: AI Integration
 - [x] Phase IV: Local Kubernetes Deployment
-- [ ] Phase V: Advanced Cloud Deployment
+- [x] Phase V: CI/CD Pipeline
+- [ ] Phase VI: Advanced Cloud Deployment
 
 ## Development Approach
 
