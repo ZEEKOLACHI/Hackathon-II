@@ -109,7 +109,7 @@ export default function SmartTaskForm({ onTaskCreated }: SmartTaskFormProps) {
         {!parsedTask ? (
           <button
             type="button"
-            onClick={handleParse}
+            onClick={() => handleParse()}
             disabled={parsing || !input.trim()}
             className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:opacity-50"
           >

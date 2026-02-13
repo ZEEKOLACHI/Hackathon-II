@@ -28,9 +28,9 @@ def list_tasks(
     query = select(Task).where(Task.user_id == user_id)
 
     if status_filter == "pending":
-        query = query.where(Task.completed == False)
+        query = query.where(Task.completed.is_(False))  # noqa: E712
     elif status_filter == "completed":
-        query = query.where(Task.completed == True)
+        query = query.where(Task.completed.is_(True))  # noqa: E712
 
     query = query.order_by(Task.created_at.desc())
     tasks = session.exec(query).all()
