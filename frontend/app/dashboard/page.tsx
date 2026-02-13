@@ -5,7 +5,9 @@ import { useRouter } from "next/navigation";
 import { useSession, signOut } from "@/lib/auth-client";
 import { api, TaskListItem } from "@/lib/api";
 import TaskList from "@/components/TaskList";
-import TaskForm from "@/components/TaskForm";
+import SmartTaskForm from "@/components/SmartTaskForm";
+import AISummary from "@/components/AISummary";
+import Suggestions from "@/components/Suggestions";
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -104,7 +106,11 @@ export default function DashboardPage() {
           </div>
         )}
 
-        <TaskForm onTaskCreated={handleTaskCreated} />
+        <AISummary />
+
+        <SmartTaskForm onTaskCreated={handleTaskCreated} />
+
+        <Suggestions onAccept={handleTaskCreated} />
 
         <div className="flex gap-2 mb-4">
           {(["all", "pending", "completed"] as const).map((status) => (

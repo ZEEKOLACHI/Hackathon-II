@@ -5,7 +5,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.config import settings
 from app.database import create_db_and_tables
-from app.routers import tasks
+from app.routers import tasks, ai
 
 
 @asynccontextmanager
@@ -19,8 +19,8 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(
     title="Todo API",
-    description="API for Todo application - Hackathon II Phase II",
-    version="1.0.0",
+    description="API for Todo application - Hackathon II Phase III with AI",
+    version="2.0.0",
     lifespan=lifespan,
 )
 
@@ -43,14 +43,15 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Include routers
+# Include routers - AI router first to ensure specific routes match before /{task_id}
+app.include_router(ai.router)
 app.include_router(tasks.router)
 
 
 @app.get("/")
 def root():
     """Root endpoint."""
-    return {"message": "Todo API - Hackathon II", "phase": 2}
+    return {"message": "Todo API - Hackathon II", "phase": 3}
 
 
 @app.get("/health")
