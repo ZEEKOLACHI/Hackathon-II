@@ -3,7 +3,11 @@
 from sqlmodel import SQLModel, create_engine, Session
 from app.config import settings
 
-engine = create_engine(settings.DATABASE_URL, echo=True)
+database_url = settings.DATABASE_URL
+if database_url.startswith("postgres://"):
+    database_url = database_url.replace("postgres://", "postgresql://", 1)
+
+engine = create_engine(database_url, echo=not settings.is_production)
 
 
 def create_db_and_tables():

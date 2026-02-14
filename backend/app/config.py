@@ -18,5 +18,12 @@ class Settings:
     # AI settings
     GEMINI_API_KEY: str = os.getenv("GEMINI_API_KEY", "")
 
+    # Environment
+    ENVIRONMENT: str = os.getenv("ENVIRONMENT", "development")
+
+    @property
+    def is_production(self) -> bool:
+        return self.ENVIRONMENT == "production"
+
 
 settings = Settings()
