@@ -1,6 +1,6 @@
 """SQLModel database models."""
 
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Optional
 from sqlmodel import SQLModel, Field, Column
 from sqlalchemy import JSON
@@ -19,5 +19,5 @@ class Task(SQLModel, table=True):
     due_date: Optional[datetime] = Field(default=None)
     priority: Optional[str] = Field(default=None)  # "low", "medium", "high"
     categories: Optional[list[str]] = Field(default=None, sa_column=Column(JSON))
-    created_at: datetime = Field(default_factory=datetime.utcnow)
-    updated_at: datetime = Field(default_factory=datetime.utcnow)
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))

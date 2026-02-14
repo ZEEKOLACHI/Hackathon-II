@@ -1,6 +1,6 @@
 """Task CRUD API endpoints."""
 
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Optional
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlmodel import Session, select
@@ -117,7 +117,7 @@ def update_task(
     if task_data.categories is not None:
         task.categories = task_data.categories
 
-    task.updated_at = datetime.utcnow()
+    task.updated_at = datetime.now(timezone.utc)
     session.add(task)
     session.commit()
     session.refresh(task)
@@ -172,7 +172,7 @@ def toggle_complete(
         )
 
     task.completed = not task.completed
-    task.updated_at = datetime.utcnow()
+    task.updated_at = datetime.now(timezone.utc)
     session.add(task)
     session.commit()
 
