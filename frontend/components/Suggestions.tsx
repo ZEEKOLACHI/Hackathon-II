@@ -1,7 +1,11 @@
 "use client";
 
 import { useState } from "react";
+import { Lightbulb, RefreshCw, X } from "lucide-react";
+import { toast } from "sonner";
 import { api, TaskSuggestion } from "@/lib/api";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 
 interface SuggestionsProps {
   onAccept: (title: string) => void;
@@ -10,19 +14,19 @@ interface SuggestionsProps {
 export default function Suggestions({ onAccept }: SuggestionsProps) {
   const [suggestions, setSuggestions] = useState<TaskSuggestion[]>([]);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
   const [isOpen, setIsOpen] = useState(false);
 
   const loadSuggestions = async () => {
     setLoading(true);
-    setError("");
 
     try {
       const data = await api.getSuggestions();
       setSuggestions(data.suggestions);
       setIsOpen(true);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to load suggestions");
+      toast.error(
+        err instanceof Error ? err.message : "Failed to load suggestions"
+      );
     } finally {
       setLoading(false);
     }
@@ -32,9 +36,12 @@ export default function Suggestions({ onAccept }: SuggestionsProps) {
     try {
       await api.createTask({ title: suggestion.title });
       setSuggestions(suggestions.filter((s) => s.title !== suggestion.title));
+      toast.success("Suggestion added as task");
       onAccept(suggestion.title);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to create task");
+      toast.error(
+        err instanceof Error ? err.message : "Failed to create task"
+      );
     }
   };
 
@@ -45,67 +52,81 @@ export default function Suggestions({ onAccept }: SuggestionsProps) {
   return (
     <div className="mb-4">
       {!isOpen ? (
-        <button
+        <Button
+          variant="ghost"
+          size="sm"
           onClick={loadSuggestions}
           disabled={loading}
-          className="text-sm text-purple-600 hover:text-purple-800 disabled:opacity-50"
+          className="text-primary"
         >
+          <Lightbulb className="h-4 w-4 mr-2" />
           {loading ? "Getting suggestions..." : "Get AI Suggestions"}
-        </button>
+        </Button>
       ) : (
-        <div className="p-4 bg-purple-50 border border-purple-200 rounded-lg">
-          <div className="flex justify-between items-center mb-3">
-            <h3 className="font-semibold text-purple-800">AI Suggestions</h3>
-            <button
+        <Card className="border-primary/20">
+          <CardHeader className="flex flex-row items-center justify-between pb-2">
+            <CardTitle className="text-base font-semibold flex items-center gap-2">
+              <Lightbulb className="h-4 w-4" />
+              AI Suggestions
+            </CardTitle>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8"
               onClick={() => setIsOpen(false)}
-              className="text-gray-400 hover:text-gray-600"
             >
-              Close
-            </button>
-          </div>
-
-          {error && (
-            <p className="text-red-600 text-sm mb-2">{error}</p>
-          )}
-
-          {suggestions.length === 0 ? (
-            <p className="text-gray-500 text-sm">No suggestions available.</p>
-          ) : (
-            <div className="space-y-2">
-              {suggestions.map((suggestion) => (
-                <div
-                  key={suggestion.title}
-                  className="p-3 bg-white rounded-lg border border-gray-200"
-                >
-                  <div className="font-medium">{suggestion.title}</div>
-                  <div className="text-sm text-gray-500 mt-1">{suggestion.reason}</div>
-                  <div className="flex gap-2 mt-2">
-                    <button
-                      onClick={() => handleAccept(suggestion)}
-                      className="text-sm px-3 py-1 bg-green-100 text-green-700 rounded hover:bg-green-200"
-                    >
-                      Add Task
-                    </button>
-                    <button
-                      onClick={() => handleDismiss(suggestion.title)}
-                      className="text-sm px-3 py-1 bg-gray-100 text-gray-600 rounded hover:bg-gray-200"
-                    >
-                      Dismiss
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-
-          <button
-            onClick={loadSuggestions}
-            disabled={loading}
-            className="mt-3 text-sm text-purple-600 hover:text-purple-800 disabled:opacity-50"
-          >
-            {loading ? "Loading..." : "Refresh suggestions"}
-          </button>
-        </div>
+              <X className="h-4 w-4" />
+            </Button>
+          </CardHeader>
+          <CardContent className="space-y-2">
+            {suggestions.length === 0 ? (
+              <p className="text-sm text-muted-foreground">
+                No suggestions available.
+              </p>
+            ) : (
+              suggestions.map((suggestion) => (
+                <Card key={suggestion.title} className="bg-muted/50">
+                  <CardContent className="p-3">
+                    <div className="font-medium text-sm">
+                      {suggestion.title}
+                    </div>
+                    <div className="text-xs text-muted-foreground mt-1">
+                      {suggestion.reason}
+                    </div>
+                    <div className="flex gap-2 mt-2">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => handleAccept(suggestion)}
+                      >
+                        Add Task
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => handleDismiss(suggestion.title)}
+                      >
+                        Dismiss
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))
+            )}
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={loadSuggestions}
+              disabled={loading}
+              className="text-primary"
+            >
+              <RefreshCw
+                className={`h-3 w-3 mr-1 ${loading ? "animate-spin" : ""}`}
+              />
+              Refresh suggestions
+            </Button>
+          </CardContent>
+        </Card>
       )}
     </div>
   );

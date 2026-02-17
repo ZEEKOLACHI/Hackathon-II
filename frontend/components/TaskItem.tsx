@@ -1,110 +1,120 @@
 "use client";
 
-import { useState } from "react";
 import { TaskListItem } from "@/lib/api";
+import { Pencil, Trash2, CalendarDays } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface TaskItemProps {
   task: TaskListItem;
   onToggleComplete: (id: number) => void;
+  onEdit: (id: number) => void;
   onDelete: (id: number) => void;
 }
 
-const priorityColors: Record<string, string> = {
-  low: "bg-gray-100 text-gray-600",
-  medium: "bg-yellow-100 text-yellow-700",
-  high: "bg-red-100 text-red-700",
+const priorityVariant: Record<string, "destructive" | "secondary" | "outline"> = {
+  high: "destructive",
+  medium: "secondary",
+  low: "outline",
 };
 
 export default function TaskItem({
   task,
   onToggleComplete,
+  onEdit,
   onDelete,
 }: TaskItemProps) {
-  const [showConfirm, setShowConfirm] = useState(false);
-
-  const handleDelete = () => {
-    if (showConfirm) {
-      onDelete(task.id);
-      setShowConfirm(false);
-    } else {
-      setShowConfirm(true);
-    }
-  };
-
-  const formattedDate = new Date(task.created_at).toLocaleDateString();
-
   const formatDueDate = (dateStr: string | null) => {
     if (!dateStr) return null;
     const date = new Date(dateStr);
     const now = new Date();
     const isOverdue = date < now && !task.completed;
-
-    return {
-      text: date.toLocaleDateString(),
-      isOverdue,
-    };
+    return { text: date.toLocaleDateString(), isOverdue };
   };
 
   const dueInfo = formatDueDate(task.due_date);
 
   return (
-    <div className="flex items-center gap-3 p-4 bg-white rounded-lg shadow-sm border">
-      <input
-        type="checkbox"
-        checked={task.completed}
-        onChange={() => onToggleComplete(task.id)}
-        className="w-5 h-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-      />
+    <Card className={task.completed ? "opacity-60" : ""}>
+      <CardContent className="flex items-center gap-3 p-4">
+        <Checkbox
+          checked={task.completed}
+          onCheckedChange={() => onToggleComplete(task.id)}
+        />
 
-      <div className="flex-1">
-        <div className="flex items-center gap-2">
-          <p
-            className={`font-medium ${
-              task.completed ? "line-through text-gray-400" : "text-gray-800"
-            }`}
-          >
-            {task.title}
-          </p>
-          {task.priority && (
-            <span className={`text-xs px-2 py-0.5 rounded ${priorityColors[task.priority]}`}>
-              {task.priority}
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2 flex-wrap">
+            <span
+              className={`font-medium truncate ${
+                task.completed
+                  ? "line-through text-muted-foreground"
+                  : ""
+              }`}
+            >
+              {task.title}
             </span>
-          )}
+            {task.priority && (
+              <Badge variant={priorityVariant[task.priority] || "outline"} className="text-xs">
+                {task.priority}
+              </Badge>
+            )}
+          </div>
+          <div className="flex items-center gap-2 text-xs text-muted-foreground mt-1">
+            <span>{new Date(task.created_at).toLocaleDateString()}</span>
+            {dueInfo && (
+              <span
+                className={`flex items-center gap-1 ${
+                  dueInfo.isOverdue ? "text-destructive font-medium" : ""
+                }`}
+              >
+                <CalendarDays className="h-3 w-3" />
+                {dueInfo.text}
+                {dueInfo.isOverdue && " (overdue)"}
+              </span>
+            )}
+          </div>
         </div>
-        <div className="flex items-center gap-2 text-sm text-gray-500">
-          <span>{formattedDate}</span>
-          {dueInfo && (
-            <span className={dueInfo.isOverdue ? "text-red-600 font-medium" : ""}>
-              · Due: {dueInfo.text}
-              {dueInfo.isOverdue && " (overdue)"}
-            </span>
-          )}
-        </div>
-      </div>
 
-      {showConfirm ? (
-        <div className="flex gap-2">
-          <button
-            onClick={handleDelete}
-            className="px-3 py-1 bg-red-600 text-white text-sm rounded hover:bg-red-700"
-          >
-            Confirm
-          </button>
-          <button
-            onClick={() => setShowConfirm(false)}
-            className="px-3 py-1 bg-gray-200 text-gray-700 text-sm rounded hover:bg-gray-300"
-          >
-            Cancel
-          </button>
-        </div>
-      ) : (
-        <button
-          onClick={handleDelete}
-          className="px-3 py-1 text-red-600 hover:text-red-800"
-        >
-          Delete
-        </button>
-      )}
-    </div>
+        <TooltipProvider>
+          <div className="flex gap-1">
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8"
+                  onClick={() => onEdit(task.id)}
+                >
+                  <Pencil className="h-4 w-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Edit</TooltipContent>
+            </Tooltip>
+
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8 text-destructive hover:text-destructive"
+                  onClick={() => onDelete(task.id)}
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Delete</TooltipContent>
+            </Tooltip>
+          </div>
+        </TooltipProvider>
+      </CardContent>
+    </Card>
   );
 }

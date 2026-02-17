@@ -1,7 +1,12 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { Sparkles, RefreshCw } from "lucide-react";
 import { api, TaskSummary } from "@/lib/api";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function AISummary() {
   const [summary, setSummary] = useState<TaskSummary | null>(null);
@@ -28,51 +33,63 @@ export default function AISummary() {
 
   if (error) {
     return (
-      <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
-        {error}
-      </div>
+      <Card className="mb-6 border-destructive/50">
+        <CardContent className="p-4 text-sm text-destructive">
+          {error}
+        </CardContent>
+      </Card>
     );
   }
 
   return (
-    <div className="mb-6 p-4 bg-gradient-to-r from-purple-50 to-blue-50 border border-purple-200 rounded-lg">
-      <div className="flex justify-between items-center mb-3">
-        <h2 className="text-lg font-semibold text-purple-800">AI Summary</h2>
-        <button
+    <Card className="mb-6 bg-gradient-to-r from-primary/5 to-primary/10 border-primary/20">
+      <CardHeader className="flex flex-row items-center justify-between pb-2">
+        <CardTitle className="text-base font-semibold flex items-center gap-2">
+          <Sparkles className="h-4 w-4" />
+          AI Summary
+        </CardTitle>
+        <Button
+          variant="ghost"
+          size="sm"
           onClick={loadSummary}
           disabled={loading}
-          className="text-sm text-purple-600 hover:text-purple-800 disabled:opacity-50"
         >
-          {loading ? "Loading..." : "Refresh"}
-        </button>
-      </div>
-
-      {loading && !summary ? (
-        <p className="text-gray-500 text-sm">Generating summary...</p>
-      ) : summary ? (
-        <>
-          <p className="text-gray-700 mb-3">{summary.summary}</p>
-
-          <div className="grid grid-cols-4 gap-2 text-center text-sm">
-            <div className="p-2 bg-white rounded">
-              <div className="font-bold text-lg">{summary.stats.total}</div>
-              <div className="text-gray-500">Total</div>
-            </div>
-            <div className="p-2 bg-white rounded">
-              <div className="font-bold text-lg text-green-600">{summary.stats.completed}</div>
-              <div className="text-gray-500">Done</div>
-            </div>
-            <div className="p-2 bg-white rounded">
-              <div className="font-bold text-lg text-orange-600">{summary.stats.high_priority}</div>
-              <div className="text-gray-500">High</div>
-            </div>
-            <div className="p-2 bg-white rounded">
-              <div className="font-bold text-lg text-red-600">{summary.stats.overdue}</div>
-              <div className="text-gray-500">Overdue</div>
+          <RefreshCw className={`h-3 w-3 mr-1 ${loading ? "animate-spin" : ""}`} />
+          Refresh
+        </Button>
+      </CardHeader>
+      <CardContent>
+        {loading && !summary ? (
+          <div className="space-y-2">
+            <Skeleton className="h-4 w-full" />
+            <Skeleton className="h-4 w-3/4" />
+            <div className="flex gap-2 mt-3">
+              <Skeleton className="h-6 w-16" />
+              <Skeleton className="h-6 w-16" />
+              <Skeleton className="h-6 w-16" />
+              <Skeleton className="h-6 w-16" />
             </div>
           </div>
-        </>
-      ) : null}
-    </div>
+        ) : summary ? (
+          <>
+            <p className="text-sm text-muted-foreground mb-3">
+              {summary.summary}
+            </p>
+            <div className="flex flex-wrap gap-2">
+              <Badge variant="secondary">{summary.stats.total} Total</Badge>
+              <Badge variant="secondary" className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
+                {summary.stats.completed} Done
+              </Badge>
+              <Badge variant="secondary" className="bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200">
+                {summary.stats.high_priority} High
+              </Badge>
+              <Badge variant="destructive">
+                {summary.stats.overdue} Overdue
+              </Badge>
+            </div>
+          </>
+        ) : null}
+      </CardContent>
+    </Card>
   );
 }

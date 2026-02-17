@@ -1,21 +1,34 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 import { useSession, signOut } from "@/lib/auth-client";
 import { api, TaskListItem } from "@/lib/api";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import Navbar from "@/components/Navbar";
 import TaskList from "@/components/TaskList";
 import SmartTaskForm from "@/components/SmartTaskForm";
 import AISummary from "@/components/AISummary";
 import Suggestions from "@/components/Suggestions";
+import TaskSkeleton from "@/components/TaskSkeleton";
+import TaskEditDialog from "@/components/TaskEditDialog";
+import DeleteConfirmDialog from "@/components/DeleteConfirmDialog";
 
 export default function DashboardPage() {
   const router = useRouter();
   const { data: session, isPending } = useSession();
   const [tasks, setTasks] = useState<TaskListItem[]>([]);
   const [filter, setFilter] = useState<"all" | "pending" | "completed">("all");
+  const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  const searchInputRef = useRef<HTMLInputElement>(null);
+
+  // Dialog state
+  const [editTaskId, setEditTaskId] = useState<number | null>(null);
+  const [editOpen, setEditOpen] = useState(false);
+  const [deleteTaskId, setDeleteTaskId] = useState<number | null>(null);
+  const [deleteOpen, setDeleteOpen] = useState(false);
 
   useEffect(() => {
     if (!isPending && !session?.user) {
@@ -23,25 +36,36 @@ export default function DashboardPage() {
     }
   }, [session, isPending, router]);
 
+  const loadTasks = useCallback(async () => {
+    try {
+      setLoading(true);
+      const data = await api.getTasks(filter);
+      setTasks(data);
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Failed to load tasks");
+    } finally {
+      setLoading(false);
+    }
+  }, [filter]);
+
   useEffect(() => {
     if (session?.token) {
       api.setToken(session.token);
       loadTasks();
     }
-  }, [session, filter]);
+  }, [session, loadTasks]);
 
-  const loadTasks = async () => {
-    try {
-      setLoading(true);
-      const data = await api.getTasks(filter);
-      setTasks(data);
-      setError("");
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to load tasks");
-    } finally {
-      setLoading(false);
-    }
-  };
+  // Ctrl+K keyboard shortcut
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === "k") {
+        e.preventDefault();
+        searchInputRef.current?.focus();
+      }
+    };
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, []);
 
   const handleTaskCreated = () => {
     loadTasks();
@@ -50,18 +74,33 @@ export default function DashboardPage() {
   const handleToggleComplete = async (id: number) => {
     try {
       await api.toggleComplete(id);
+      toast.success("Task updated");
       loadTasks();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to update task");
+      toast.error(err instanceof Error ? err.message : "Failed to update task");
     }
   };
 
-  const handleDeleteTask = async (id: number) => {
+  const handleEdit = (id: number) => {
+    setEditTaskId(id);
+    setEditOpen(true);
+  };
+
+  const handleDeleteRequest = (id: number) => {
+    setDeleteTaskId(id);
+    setDeleteOpen(true);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!deleteTaskId) return;
     try {
-      await api.deleteTask(id);
+      await api.deleteTask(deleteTaskId);
+      toast.success("Task deleted");
+      setDeleteOpen(false);
+      setDeleteTaskId(null);
       loadTasks();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to delete task");
+      toast.error(err instanceof Error ? err.message : "Failed to delete task");
     }
   };
 
@@ -72,10 +111,19 @@ export default function DashboardPage() {
     router.refresh();
   };
 
+  // Client-side search filtering
+  const filteredTasks = searchQuery
+    ? tasks.filter((t) =>
+        t.title.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    : tasks;
+
   if (isPending) {
     return (
-      <div className="flex min-h-screen items-center justify-center">
-        <p>Loading...</p>
+      <div className="min-h-screen">
+        <div className="max-w-4xl mx-auto p-8">
+          <TaskSkeleton />
+        </div>
       </div>
     );
   }
@@ -85,59 +133,61 @@ export default function DashboardPage() {
   }
 
   return (
-    <main className="min-h-screen p-8">
-      <div className="max-w-2xl mx-auto">
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold">My Tasks</h1>
-          <div className="flex items-center gap-4">
-            <span className="text-gray-600">{session.user.email}</span>
-            <button
-              onClick={handleSignOut}
-              className="px-4 py-2 text-gray-600 hover:text-gray-800"
-            >
-              Sign Out
-            </button>
-          </div>
-        </div>
+    <div className="min-h-screen">
+      <Navbar
+        user={session.user}
+        searchQuery={searchQuery}
+        onSearchChange={setSearchQuery}
+        onSignOut={handleSignOut}
+        searchInputRef={searchInputRef}
+      />
 
-        {error && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-            {error}
-          </div>
-        )}
-
+      <main className="max-w-4xl mx-auto p-6">
         <AISummary />
 
         <SmartTaskForm onTaskCreated={handleTaskCreated} />
 
         <Suggestions onAccept={handleTaskCreated} />
 
-        <div className="flex gap-2 mb-4">
-          {(["all", "pending", "completed"] as const).map((status) => (
-            <button
-              key={status}
-              onClick={() => setFilter(status)}
-              className={`px-4 py-2 rounded-lg capitalize ${
-                filter === status
-                  ? "bg-blue-600 text-white"
-                  : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-              }`}
-            >
-              {status}
-            </button>
-          ))}
-        </div>
+        <Tabs
+          value={filter}
+          onValueChange={(v) =>
+            setFilter(v as "all" | "pending" | "completed")
+          }
+          className="mb-4"
+        >
+          <TabsList>
+            <TabsTrigger value="all">All</TabsTrigger>
+            <TabsTrigger value="pending">Pending</TabsTrigger>
+            <TabsTrigger value="completed">Completed</TabsTrigger>
+          </TabsList>
+        </Tabs>
 
         {loading ? (
-          <p className="text-gray-500">Loading tasks...</p>
+          <TaskSkeleton />
         ) : (
           <TaskList
-            tasks={tasks}
+            tasks={filteredTasks}
             onToggleComplete={handleToggleComplete}
-            onDelete={handleDeleteTask}
+            onEdit={handleEdit}
+            onDelete={handleDeleteRequest}
+            isSearchResult={!!searchQuery}
           />
         )}
-      </div>
-    </main>
+      </main>
+
+      <TaskEditDialog
+        taskId={editTaskId}
+        open={editOpen}
+        onOpenChange={setEditOpen}
+        onSaved={loadTasks}
+      />
+
+      <DeleteConfirmDialog
+        open={deleteOpen}
+        onOpenChange={setDeleteOpen}
+        onConfirm={handleDeleteConfirm}
+      />
+    </div>
   );
 }

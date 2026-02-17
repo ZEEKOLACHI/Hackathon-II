@@ -1,7 +1,13 @@
 "use client";
 
 import { useState } from "react";
+import { Loader2 } from "lucide-react";
+import { toast } from "sonner";
 import { api, ParsedTask } from "@/lib/api";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent } from "@/components/ui/card";
 
 interface SmartTaskFormProps {
   onTaskCreated: () => void;
@@ -12,24 +18,21 @@ export default function SmartTaskForm({ onTaskCreated }: SmartTaskFormProps) {
   const [parsedTask, setParsedTask] = useState<ParsedTask | null>(null);
   const [loading, setLoading] = useState(false);
   const [parsing, setParsing] = useState(false);
-  const [error, setError] = useState("");
 
   const handleParse = async (autoCreate: boolean = false) => {
     if (!input.trim()) return;
 
     setParsing(true);
-    setError("");
 
     try {
       const parsed = await api.parseTask(input.trim());
       setParsedTask(parsed);
 
-      // Auto-create task after successful parse
       if (autoCreate && parsed) {
         await createTask(parsed);
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to parse task");
+      toast.error(err instanceof Error ? err.message : "Failed to parse task");
     } finally {
       setParsing(false);
     }
@@ -37,7 +40,6 @@ export default function SmartTaskForm({ onTaskCreated }: SmartTaskFormProps) {
 
   const createTask = async (task: ParsedTask) => {
     setLoading(true);
-    setError("");
 
     try {
       await api.createTask({
@@ -49,9 +51,10 @@ export default function SmartTaskForm({ onTaskCreated }: SmartTaskFormProps) {
       });
       setInput("");
       setParsedTask(null);
+      toast.success("Task created");
       onTaskCreated();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to create task");
+      toast.error(err instanceof Error ? err.message : "Failed to create task");
     } finally {
       setLoading(false);
     }
@@ -61,18 +64,15 @@ export default function SmartTaskForm({ onTaskCreated }: SmartTaskFormProps) {
     e.preventDefault();
 
     if (!parsedTask) {
-      // Parse and auto-create on Enter
       await handleParse(true);
       return;
     }
 
-    // If already parsed, create the task
     await createTask(parsedTask);
   };
 
   const handleClear = () => {
     setParsedTask(null);
-    setError("");
   };
 
   const formatDate = (dateStr: string | null) => {
@@ -80,22 +80,10 @@ export default function SmartTaskForm({ onTaskCreated }: SmartTaskFormProps) {
     return new Date(dateStr).toLocaleString();
   };
 
-  const priorityColors = {
-    low: "bg-gray-100 text-gray-700",
-    medium: "bg-yellow-100 text-yellow-700",
-    high: "bg-red-100 text-red-700",
-  };
-
   return (
     <form onSubmit={handleSubmit} className="mb-6">
-      {error && (
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-2 rounded mb-2 text-sm">
-          {error}
-        </div>
-      )}
-
       <div className="flex gap-2">
-        <input
+        <Input
           type="text"
           value={input}
           onChange={(e) => {
@@ -103,72 +91,88 @@ export default function SmartTaskForm({ onTaskCreated }: SmartTaskFormProps) {
             if (parsedTask) setParsedTask(null);
           }}
           placeholder="Try: 'Buy groceries tomorrow at 5pm high priority'"
-          className="flex-1 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:outline-none"
           maxLength={500}
+          className="flex-1"
         />
         {!parsedTask ? (
-          <button
+          <Button
             type="button"
+            variant="secondary"
             onClick={() => handleParse()}
             disabled={parsing || !input.trim()}
-            className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:opacity-50"
           >
-            {parsing ? "..." : "Parse"}
-          </button>
+            {parsing ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              "Parse"
+            )}
+          </Button>
         ) : (
-          <button
-            type="submit"
-            disabled={loading}
-            className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50"
-          >
-            {loading ? "..." : "Create"}
-          </button>
+          <Button type="submit" disabled={loading}>
+            {loading ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              "Create"
+            )}
+          </Button>
         )}
       </div>
 
       {parsedTask && (
-        <div className="mt-3 p-4 bg-purple-50 border border-purple-200 rounded-lg">
-          <div className="flex justify-between items-start mb-2">
-            <span className="text-sm text-purple-600 font-medium">AI Parsed Result</span>
-            <button
-              type="button"
-              onClick={handleClear}
-              className="text-gray-400 hover:text-gray-600 text-sm"
-            >
-              Clear
-            </button>
-          </div>
-
-          <div className="space-y-2">
-            <div>
-              <span className="font-semibold">{parsedTask.title}</span>
+        <Card className="mt-3 border-primary/20 bg-primary/5">
+          <CardContent className="p-4">
+            <div className="flex justify-between items-start mb-2">
+              <span className="text-sm font-medium text-primary">
+                AI Parsed Result
+              </span>
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                onClick={handleClear}
+                className="h-auto p-0 text-muted-foreground hover:text-foreground"
+              >
+                Clear
+              </Button>
             </div>
 
-            {parsedTask.description && (
-              <div className="text-sm text-gray-600">{parsedTask.description}</div>
-            )}
+            <div className="space-y-2">
+              <div className="font-semibold">{parsedTask.title}</div>
 
-            <div className="flex flex-wrap gap-2 text-sm">
-              {parsedTask.due_date && (
-                <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded">
-                  Due: {formatDate(parsedTask.due_date)}
-                </span>
+              {parsedTask.description && (
+                <div className="text-sm text-muted-foreground">
+                  {parsedTask.description}
+                </div>
               )}
 
-              {parsedTask.priority && (
-                <span className={`px-2 py-1 rounded ${priorityColors[parsedTask.priority]}`}>
-                  {parsedTask.priority} priority
-                </span>
-              )}
+              <div className="flex flex-wrap gap-2">
+                {parsedTask.due_date && (
+                  <Badge variant="secondary">
+                    Due: {formatDate(parsedTask.due_date)}
+                  </Badge>
+                )}
 
-              {parsedTask.categories?.map((cat) => (
-                <span key={cat} className="px-2 py-1 bg-gray-100 text-gray-600 rounded">
-                  {cat}
-                </span>
-              ))}
+                {parsedTask.priority && (
+                  <Badge
+                    variant={
+                      parsedTask.priority === "high"
+                        ? "destructive"
+                        : "secondary"
+                    }
+                  >
+                    {parsedTask.priority} priority
+                  </Badge>
+                )}
+
+                {parsedTask.categories?.map((cat) => (
+                  <Badge key={cat} variant="outline">
+                    {cat}
+                  </Badge>
+                ))}
+              </div>
             </div>
-          </div>
-        </div>
+          </CardContent>
+        </Card>
       )}
     </form>
   );

@@ -2,7 +2,7 @@
 
 ## Project Overview
 This is a **Spec-Driven Development** project for Hackathon II.
-Currently in **Phase VI**: Cloud Deployment (Vercel + Render).
+Currently in **Phase VII**: UI/UX Overhaul with shadcn/ui.
 
 ## Key Constraint
 **No manual code writing allowed.** All implementation must be generated from specifications.
@@ -18,7 +18,8 @@ Currently in **Phase VI**: Cloud Deployment (Vercel + Render).
 - `/src/todo/` - Phase I console app (completed)
 
 ## Spec-Kit Structure
-- `/specs/phase6-cloud-deployment.md` - Current phase spec
+- `/specs/phase7-ui-overhaul.md` - Current phase spec
+- `/specs/phase6-cloud-deployment.md` - Phase VI spec (completed)
 - `/specs/phase5-ci-cd-pipeline.md` - Phase V spec (completed)
 - `/specs/phase4-local-k8s.md` - Phase IV spec (completed)
 - `/specs/phase3-ai-integration.md` - Phase III spec (completed)
@@ -56,6 +57,17 @@ Currently in **Phase VI**: Cloud Deployment (Vercel + Render).
 - Environment/production config toggle
 - Optional `render.yaml` blueprint for IaC
 
+## Phase VII Requirements
+- shadcn/ui component library (Radix UI + Tailwind CSS)
+- Dark/light mode toggle with system preference detection (next-themes)
+- Toast notifications for all user actions (sonner)
+- Loading skeletons instead of "Loading..." text
+- Task edit dialog and delete confirmation dialog
+- Search bar with Ctrl+K shortcut
+- Responsive mobile-first layout
+- Empty states for no tasks and no search results
+- All existing auth, CRUD, and AI features unchanged
+
 ## Commands
 - Frontend: `cd frontend && npm run dev`
 - Backend: `cd backend && uvicorn app.main:app --reload`
@@ -79,3 +91,4 @@ FRONTEND_URL=http://localhost:3000
 - K8s deployment spec: `/specs/phase4-local-k8s.md`
 - CI/CD spec: `/specs/phase5-ci-cd-pipeline.md`
 - Cloud deployment spec: `/specs/phase6-cloud-deployment.md`
+- UI/UX overhaul spec: `/specs/phase7-ui-overhaul.md`

@@ -28,3 +28,6 @@ node_modules/
 
 # Claude
 .claude/
+
+.vercel
+.env*.local
