@@ -459,6 +459,6 @@ Show friendly empty states instead of blank space:
 - **Completed:** 2026-02-17
 - **Commits:** `9dae7a2` (main implementation), `544800b` (frontend CLAUDE.md), `af1bedb` (project CLAUDE.md), `ad400d6` (constitution.md)
 - **CI:** All 5 jobs pass (Frontend Lint, Frontend Build, Backend Tests, Backend Lint, Docker Build)
-- **Vercel:** Deployed and verified at https://frontend-seven-rho-73.vercel.app
-- **Backend:** Unchanged, healthy at https://backend-theta-eight-41.vercel.app
+- **Vercel:** Deployed and verified at https://hackathon-ii-app.vercel.app
+- **Backend:** Unchanged, healthy at https://hackathon-ii-api.vercel.app
 - **E2E verified:** Sign up, sign in, task CRUD, AI parse, AI summary, AI suggestions, toggle complete, delete — all working
