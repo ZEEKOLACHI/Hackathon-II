@@ -4,7 +4,7 @@
 
 A todo application evolving from console app to AI-powered task manager using **Spec-Driven Development**. Each phase builds on the last — from CLI to full-stack to intelligent task management powered by Google Gemini.
 
-## Current Phase: Phase V - CI/CD Pipeline
+## Current Phase: All Seven Phases Complete
 
 ## Features
 
@@ -44,15 +44,33 @@ A todo application evolving from console app to AI-powered task manager using **
 - Frontend build validation (TypeScript + Next.js)
 - Docker image build verification for both services
 
+### Phase VI - Cloud Deployment
+- Frontend deployed to Vercel (free tier, auto-deploy from GitHub)
+- Backend deployed to Render as Docker Web Service (free tier)
+- PostgreSQL on Render (free tier)
+- CORS configured for production Vercel domain
+- `render.yaml` Infrastructure-as-Code blueprint
+
+### Phase VII - UI/UX Overhaul
+- shadcn/ui component library (17 Radix UI primitives + Tailwind CSS)
+- Dark/light/system mode toggle with next-themes
+- Toast notifications for all user actions via sonner
+- Loading skeletons instead of spinner text
+- Task edit dialog and delete confirmation dialog
+- Search bar with Ctrl+K shortcut in sticky navbar
+- User dropdown with avatar
+- Empty states for no tasks and no search results
+- Hero landing page with gradient branding
+
 ## Tech Stack
 
 | Layer | Technology |
 |-------|------------|
-| Frontend | Next.js 15, TypeScript, Tailwind CSS |
+| Frontend | Next.js 16, TypeScript, Tailwind CSS, shadcn/ui, next-themes, sonner |
 | Backend | FastAPI, SQLModel, Python 3.12+ |
 | Database | Neon PostgreSQL (dev) / In-cluster PostgreSQL (K8s) |
 | Auth | JWT (custom implementation) |
-| AI | Google Gemini API (gemini-2.0-flash) |
+| AI | Google Gemini API (gemini-2.5-flash) |
 | Containers | Docker, docker-compose |
 | Orchestration | Kubernetes (Minikube) |
 | CI/CD | GitHub Actions |
@@ -63,11 +81,15 @@ A todo application evolving from console app to AI-powered task manager using **
 ├── constitution.md              # Project principles
 ├── CLAUDE.md                    # Claude Code instructions
 ├── docker-compose.yml           # Local multi-service dev compose
+├── render.yaml                  # Render IaC blueprint
 ├── specs/                       # Feature specifications
 │   ├── phase1-console-app.md
 │   ├── phase2-fullstack-app.md
 │   ├── phase3-ai-integration.md
 │   ├── phase4-local-k8s.md
+│   ├── phase5-ci-cd-pipeline.md
+│   ├── phase6-cloud-deployment.md
+│   ├── phase7-ui-overhaul.md
 │   └── history/
 ├── k8s/                         # Kubernetes manifests
 │   ├── namespace.yaml
@@ -85,12 +107,18 @@ A todo application evolving from console app to AI-powered task manager using **
 │   │   ├── dashboard/          # Main dashboard
 │   │   └── api/auth/           # Auth API routes
 │   ├── components/
+│   │   ├── ui/                 # shadcn/ui primitives (17 components)
+│   │   ├── Navbar.tsx          # Sticky nav with search, theme toggle, user menu
+│   │   ├── ThemeToggle.tsx     # Dark/light/system mode toggle
 │   │   ├── SmartTaskForm.tsx   # AI-powered natural language input
 │   │   ├── Suggestions.tsx     # AI task suggestions panel
 │   │   ├── AISummary.tsx       # Daily AI summary card
-│   │   ├── TaskList.tsx        # Task list display
-│   │   ├── TaskItem.tsx        # Individual task component
-│   │   └── TaskForm.tsx        # Standard task form
+│   │   ├── TaskList.tsx        # Task list with empty states
+│   │   ├── TaskItem.tsx        # Task card with badges and actions
+│   │   ├── TaskEditDialog.tsx  # Dialog for editing tasks
+│   │   ├── DeleteConfirmDialog.tsx # Delete confirmation dialog
+│   │   ├── TaskSkeleton.tsx    # Loading skeleton cards
+│   │   └── EmptyState.tsx      # Reusable empty state component
 │   └── lib/
 ├── backend/                     # FastAPI app
 │   ├── app/
@@ -264,7 +292,8 @@ Generates a prioritized overview of your day with key stats.
 - [x] Phase III: AI Integration
 - [x] Phase IV: Local Kubernetes Deployment
 - [x] Phase V: CI/CD Pipeline
-- [ ] Phase VI: Advanced Cloud Deployment
+- [x] Phase VI: Cloud Deployment (Vercel + Render)
+- [x] Phase VII: UI/UX Overhaul (shadcn/ui + Dark Mode)
 
 ## Development Approach
 
