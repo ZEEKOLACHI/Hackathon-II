@@ -50,12 +50,11 @@ All **seven phases completed**.
 
 ## Phase VI Requirements
 - Frontend deployed to Vercel (free tier, auto-deploy from GitHub)
-- Backend deployed to Render as Docker Web Service (free tier)
-- PostgreSQL on Render (free tier)
+- Backend deployed to Vercel as serverless functions (free tier)
 - CORS updated for production Vercel domain
 - Database URL format fix (`postgres://` → `postgresql://`)
 - Environment/production config toggle
-- Optional `render.yaml` blueprint for IaC
+- `render.yaml` blueprint available but unused (both services on Vercel)
 
 ## Phase VII Requirements (completed)
 - shadcn/ui component library (17 Radix UI primitives + Tailwind CSS)

@@ -46,10 +46,10 @@ A todo application evolving from console app to AI-powered task manager using **
 
 ### Phase VI - Cloud Deployment
 - Frontend deployed to Vercel (free tier, auto-deploy from GitHub)
-- Backend deployed to Render as Docker Web Service (free tier)
-- PostgreSQL on Render (free tier)
+- Backend deployed to Vercel as serverless functions (free tier)
 - CORS configured for production Vercel domain
-- `render.yaml` Infrastructure-as-Code blueprint
+- Environment/production config toggle
+- `render.yaml` blueprint available (unused — both services on Vercel)
 
 ### Phase VII - UI/UX Overhaul
 - shadcn/ui component library (17 Radix UI primitives + Tailwind CSS)
@@ -292,7 +292,7 @@ Generates a prioritized overview of your day with key stats.
 - [x] Phase III: AI Integration
 - [x] Phase IV: Local Kubernetes Deployment
 - [x] Phase V: CI/CD Pipeline
-- [x] Phase VI: Cloud Deployment (Vercel + Render)
+- [x] Phase VI: Cloud Deployment (Vercel)
 - [x] Phase VII: UI/UX Overhaul (shadcn/ui + Dark Mode)
 
 ## Development Approach
