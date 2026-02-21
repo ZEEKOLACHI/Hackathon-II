@@ -9,7 +9,6 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Navbar from "@/components/Navbar";
 import TaskList from "@/components/TaskList";
 import SmartTaskForm from "@/components/SmartTaskForm";
-import AISummary from "@/components/AISummary";
 import Suggestions from "@/components/Suggestions";
 import TaskSkeleton from "@/components/TaskSkeleton";
 import TaskEditDialog from "@/components/TaskEditDialog";
@@ -143,8 +142,6 @@ export default function DashboardPage() {
       />
 
       <main className="max-w-4xl mx-auto p-6">
-        <AISummary />
-
         <SmartTaskForm onTaskCreated={handleTaskCreated} />
 
         <Suggestions onAccept={handleTaskCreated} />
