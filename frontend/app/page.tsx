@@ -17,8 +17,8 @@ export default function Home() {
         </div>
 
         <p className="text-xl text-muted-foreground mb-8">
-          AI-powered task management. Create, organize, and complete tasks
-          smarter with intelligent parsing, suggestions, and summaries.
+          Simple task management. Create, organize, and complete tasks
+          with ease using filters, priorities, and progress tracking.
         </p>
 
         <div className="flex gap-4 justify-center mb-12">
