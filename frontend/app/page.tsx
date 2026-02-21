@@ -33,23 +33,23 @@ export default function Home() {
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-left">
           <div className="flex flex-col items-center text-center gap-2">
             <Brain className="h-8 w-8 text-purple-500" />
-            <h3 className="font-semibold">Smart Parsing</h3>
+            <h3 className="font-semibold">Quick Entry</h3>
             <p className="text-sm text-muted-foreground">
-              Type naturally and AI extracts tasks, dates, and priorities.
+              Add tasks instantly with titles, due dates, and priorities.
             </p>
           </div>
           <div className="flex flex-col items-center text-center gap-2">
             <Zap className="h-8 w-8 text-yellow-500" />
-            <h3 className="font-semibold">AI Suggestions</h3>
+            <h3 className="font-semibold">Fast & Simple</h3>
             <p className="text-sm text-muted-foreground">
-              Get intelligent task recommendations based on your workflow.
+              Manage your tasks quickly with a clean, distraction-free interface.
             </p>
           </div>
           <div className="flex flex-col items-center text-center gap-2">
             <CheckCircle className="h-8 w-8 text-green-500" />
             <h3 className="font-semibold">Stay Organized</h3>
             <p className="text-sm text-muted-foreground">
-              Track progress with summaries, filters, and priorities.
+              Track progress with filters, priorities, and completion status.
             </p>
           </div>
         </div>
