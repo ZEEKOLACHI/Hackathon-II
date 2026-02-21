@@ -8,7 +8,6 @@ import { api, TaskListItem } from "@/lib/api";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Navbar from "@/components/Navbar";
 import TaskList from "@/components/TaskList";
-import SmartTaskForm from "@/components/SmartTaskForm";
 import TaskSkeleton from "@/components/TaskSkeleton";
 import TaskEditDialog from "@/components/TaskEditDialog";
 import DeleteConfirmDialog from "@/components/DeleteConfirmDialog";
@@ -141,8 +140,6 @@ export default function DashboardPage() {
       />
 
       <main className="max-w-4xl mx-auto p-6">
-        <SmartTaskForm onTaskCreated={handleTaskCreated} />
-
         <Tabs
           value={filter}
           onValueChange={(v) =>
