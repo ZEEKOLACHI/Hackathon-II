@@ -4,9 +4,11 @@ import { useEffect, useState, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useSession, signOut } from "@/lib/auth-client";
-import { api, TaskListItem } from "@/lib/api";
+import { api, TaskListItem, CreateTaskData } from "@/lib/api";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Navbar from "@/components/Navbar";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import TaskList from "@/components/TaskList";
 import TaskSkeleton from "@/components/TaskSkeleton";
 import TaskEditDialog from "@/components/TaskEditDialog";
@@ -26,6 +28,8 @@ export default function DashboardPage() {
   const [editOpen, setEditOpen] = useState(false);
   const [deleteTaskId, setDeleteTaskId] = useState<number | null>(null);
   const [deleteOpen, setDeleteOpen] = useState(false);
+  const [newTaskTitle, setNewTaskTitle] = useState("");
+  const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
     if (!isPending && !session?.user) {
@@ -66,6 +70,22 @@ export default function DashboardPage() {
 
   const handleTaskCreated = () => {
     loadTasks();
+  };
+
+  const handleAddTask = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newTaskTitle.trim()) return;
+    try {
+      setSubmitting(true);
+      await api.createTask({ title: newTaskTitle.trim() } as CreateTaskData);
+      setNewTaskTitle("");
+      toast.success("Task added");
+      loadTasks();
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Failed to add task");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const handleToggleComplete = async (id: number) => {
@@ -140,6 +160,18 @@ export default function DashboardPage() {
       />
 
       <main className="max-w-4xl mx-auto p-6">
+        <form onSubmit={handleAddTask} className="flex gap-2 mb-6">
+          <Input
+            placeholder="Add a new task..."
+            value={newTaskTitle}
+            onChange={(e) => setNewTaskTitle(e.target.value)}
+            disabled={submitting}
+          />
+          <Button type="submit" disabled={submitting || !newTaskTitle.trim()}>
+            Add
+          </Button>
+        </form>
+
         <Tabs
           value={filter}
           onValueChange={(v) =>
